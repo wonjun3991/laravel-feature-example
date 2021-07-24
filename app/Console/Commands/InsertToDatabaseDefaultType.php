@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\CatPatternType;
 use App\Models\CatType;
+use App\Models\QuestionType;
 use DB;
 use Illuminate\Console\Command;
 use Throwable;
@@ -44,6 +45,12 @@ class InsertToDatabaseDefaultType extends Command
         '스노우슈',
     ];
 
+    private const QUESTION_TYPE_ARRAY = [
+        '사료',
+        '그루밍',
+        '집사후기'
+    ];
+
     /**
      * Create a new command instance.
      *
@@ -62,22 +69,28 @@ class InsertToDatabaseDefaultType extends Command
     public function handle()
     {
         DB::beginTransaction();
-        try{
+        try {
             CatType::query()->delete();
             CatPatternType::query()->delete();
+            QuestionType::query()->delete();
 
-            foreach(self::CAT_TYPE_ARRAY as $catType){
+            foreach (self::CAT_TYPE_ARRAY as $catType) {
                 $ct = new CatType();
                 $ct->type = $catType;
                 $ct->save();
             }
-            foreach(self::CAT_PATTERN_TYPE_ARRAY as $catPatternType){
+            foreach (self::CAT_PATTERN_TYPE_ARRAY as $catPatternType) {
                 $cpt = new CatPatternType();
                 $cpt->type = $catPatternType;
                 $cpt->save();
             }
+            foreach(self::QUESTION_TYPE_ARRAY as $questionType){
+                $qt = new QuestionType();
+                $qt->type = $questionType;
+                $qt->save();
+            }
             DB::commit();
-        }catch(Throwable $e){
+        } catch (Throwable $e) {
             DB::rollBack();
             $this->info($e->getMessage());
             $this->info('트랜잭션 처리중 오류 발생');

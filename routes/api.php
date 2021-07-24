@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,9 +31,29 @@ Route::apiResources([
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::get('/{id}', [UserController::class, 'show'])->name('show');
+        Route::get('/{user}', [UserController::class, 'show'])->name('show');
     });
-    Route::apiResources([
-
-    ]);
 });
+
+Route::prefix('questions')->name('questions.')->group(function () {
+    Route::get('/', [QuestionController::class, 'index'])->name('index');
+    Route::get('/{question}', [QuestionController::class, 'show'])->name('show');
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/', [QuestionController::class, 'store'])->name('store');
+        Route::patch('/{question}', [QuestionController::class, 'update'])->name('update');
+        Route::delete('/{question}', [QuestionController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('/{question}/answers')->name('answers.')->group(function () {
+        Route::get('/', [AnswerController::class, 'index'])->name('index');
+        Route::get('/{answer}', [AnswerController::class, 'show'])->name('show');
+
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/', [AnswerController::class, 'store'])->name('store');
+            Route::patch('/{answer}', [AnswerController::class, 'update'])->name('update');
+            Route::delete('/{answer}', [AnswerController::class, 'destroy'])->name('destroy');
+        });
+    });
+});
+

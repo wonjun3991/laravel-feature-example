@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AlreadyExistsException;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
@@ -20,10 +21,13 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $userDto = $request->toUserDto();
-        $this->userService->createUser($userDto);
-        return response()->json([
-            'message' => 'success'
-        ], Response::HTTP_CREATED);
+        try {
+            $this->userService->createUser($userDto);
+        } catch (AlreadyExistsException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        return response()->json(['message' => '회원가입이 완료되었습니다.'], Response::HTTP_CREATED);
     }
 
     public function login(LoginRequest $request)
@@ -31,19 +35,22 @@ class AuthController extends Controller
         $credentials = $request->validated();
         if (!auth()->attempt($credentials)) {
             return response()->json([
-                'message' => 'The given data was invalid',
+                'message' => '인증정보가 올바르지 않습니다.'
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user = User::whereEmail($credentials['email'])->first();
         $token = $user->createToken('auth-token')->plainTextToken;
 
-        return response()->json(['access_token' => $token]);
+        return response()->json([
+            'message' => '로그인이 완료되었습니다.',
+            'access_token' => $token
+        ]);
     }
 
     public function logout()
     {
         auth()->user()->tokens()->delete();
-        return response()->json(['message' => 'logout']);
+        return response()->json(['message' => '로그아웃이 완료되었습니다.']);
     }
 }

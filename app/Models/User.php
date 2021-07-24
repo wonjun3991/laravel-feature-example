@@ -87,4 +87,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Models\CatPatternType');
     }
+
+    public function isMentor()
+    {
+        return $this->type === '멘토';
+    }
 }
