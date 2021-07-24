@@ -11,7 +11,8 @@ class UpdateAnswerRequest extends FormRequest
     {
         return [
             'question_id' => ['nullable', 'int'],
-            'content' => ['nullable', 'string']
+            'content' => ['nullable', 'string'],
+            'selected' =>['nullable','boolean']
         ];
     }
 
@@ -20,7 +21,7 @@ class UpdateAnswerRequest extends FormRequest
         return new AnswerDto(
             $this->get('question_id'),
             $this->user()->id,
-            null,
+            $this->get('selected'),
             $this->get('content')
         );
     }

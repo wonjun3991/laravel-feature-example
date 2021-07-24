@@ -6,7 +6,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class HasSelectedAnswerException extends Exception
+class QuestionHasSelectedAnswerException extends Exception
 {
 
     public function __construct()
