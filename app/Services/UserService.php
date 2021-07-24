@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Exceptions\AlreadyExistsException;
-use App\Exceptions\BadRequestException;
-use App\Exceptions\DataNotFoundException;
 use App\Models\CatPatternType;
 use App\Models\CatType;
 use App\Models\User;
@@ -17,7 +15,7 @@ class UserService
     {
         return User::with(['catType', 'catPatternType'])->get();
     }
-    
+
     public function createUser(UserDto $dto)
     {
         if ($this->isExistEmail($dto->getEmail())) {

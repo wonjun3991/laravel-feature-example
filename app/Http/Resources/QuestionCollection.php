@@ -22,6 +22,7 @@ class QuestionCollection extends ResourceCollection
                     'question_type' => $item->questionType->type,
                     'title' => $item->title,
                     'content' => Str::limit($item->content, 20),
+                    'created_at' => $item->created_at,
                     'user' => [
                         'cat_type' => $item->user->catType->type,
                         'cat_pattern_type' => $item->user->catPatternType->type,

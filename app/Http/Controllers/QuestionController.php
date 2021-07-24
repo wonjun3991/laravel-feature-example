@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\HasAnswerException;
-use App\Exceptions\HasSelectedAnswerException;
+use App\Exceptions\QuestionHasSelectedAnswerException;
 use App\Http\Requests\StoreQuestionRequest;
 use App\Http\Requests\UpdateQuestionRequest;
 use App\Http\Resources\QuestionCollection;
 use App\Http\Resources\QuestionResource;
 use App\Services\QuestionService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class QuestionController extends Controller
@@ -45,7 +44,7 @@ class QuestionController extends Controller
         $questionDto = $request->toQuestionDto();
         try {
             $this->questionService->updateQuestion($id, $questionDto);
-        } catch (HasAnswerException | HasSelectedAnswerException $e) {
+        } catch (HasAnswerException | QuestionHasSelectedAnswerException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
         return response()->json(['message' => '질문이 수정되었습니다.']);

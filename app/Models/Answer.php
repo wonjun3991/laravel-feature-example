@@ -64,6 +64,6 @@ class Answer extends Model
 
     public function isSelected(): bool
     {
-        return $this->selected === true;
+        return $this->selected;
     }
 }

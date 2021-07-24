@@ -20,9 +20,9 @@ class UpdateQuestionRequest extends FormRequest
     {
         return new QuestionDto(
             $this->user()->id,
-            $this->has('question_type') ? $this->get('question_type') : null,
-            $this->has('title') ? $this->get('title') : null,
-            $this->has('content') ? $this->get('content') : null,
+            $this->get('question_type'),
+            $this->get('title'),
+            $this->get('content'),
         );
     }
 }

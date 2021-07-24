@@ -20,7 +20,7 @@ class StoreAnswerRequest extends FormRequest
         return new AnswerDto(
             $this->get('question_id'),
             $this->user()->id,
-            null,
+            false,
             $this->get('content')
         );
     }

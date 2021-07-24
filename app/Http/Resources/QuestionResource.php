@@ -19,9 +19,8 @@ class QuestionResource extends JsonResource
             'question_type' => $this->questionType,
             'title' => $this->title,
             'content' => $this->content,
-            'answers' => [
-
-            ],
+            'created_at'=>$this->created_at,
+            'answers' => AnswerResource::collection($this->answers),
             'user' => [
                 'id' => $this->user->id,
                 'type' => $this->user->type,
