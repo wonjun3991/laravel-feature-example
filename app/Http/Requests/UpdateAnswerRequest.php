@@ -10,7 +10,6 @@ class UpdateAnswerRequest extends FormRequest
     public function rules()
     {
         return [
-            'question_id' => ['nullable', 'int'],
             'content' => ['nullable', 'string'],
             'selected' =>['nullable','boolean']
         ];
@@ -19,7 +18,6 @@ class UpdateAnswerRequest extends FormRequest
     public function toAnswerDto(): AnswerDto
     {
         return new AnswerDto(
-            $this->get('question_id'),
             $this->user()->id,
             $this->get('selected'),
             $this->get('content')

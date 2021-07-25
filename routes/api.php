@@ -45,13 +45,16 @@ Route::prefix('questions')->name('questions.')->group(function () {
 
     Route::prefix('/{question}/answers')->name('answers.')->group(function () {
         Route::get('/', [AnswerController::class, 'index'])->name('index');
-        Route::get('/{answer}', [AnswerController::class, 'show'])->name('show');
+        Route::middleware('auth:sanctum')->post('/', [AnswerController::class, 'store'])->name('store');
+    });
+});
 
-        Route::middleware('auth:sanctum')->group(function () {
-            Route::post('/', [AnswerController::class, 'store'])->name('store');
-            Route::patch('/{answer}', [AnswerController::class, 'update'])->name('update');
-            Route::delete('/{answer}', [AnswerController::class, 'destroy'])->name('destroy');
-        });
+Route::prefix('answers')->name('answers.')->group(function(){
+    Route::get('/{answer}', [AnswerController::class, 'show'])->name('show');
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::patch('/{answer}', [AnswerController::class, 'update'])->name('update');
+        Route::delete('/{answer}', [AnswerController::class, 'destroy'])->name('destroy');
     });
 });
 

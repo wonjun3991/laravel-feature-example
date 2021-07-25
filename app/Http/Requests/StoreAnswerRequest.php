@@ -10,7 +10,6 @@ class StoreAnswerRequest extends FormRequest
     public function rules()
     {
         return [
-            'question_id' => ['required', 'int'],
             'content' => ['required', 'string']
         ];
     }
@@ -18,7 +17,6 @@ class StoreAnswerRequest extends FormRequest
     public function toAnswerDto(): AnswerDto
     {
         return new AnswerDto(
-            $this->get('question_id'),
             $this->user()->id,
             false,
             $this->get('content')

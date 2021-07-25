@@ -15,7 +15,7 @@ class CreateQuestionTypesTable extends Migration
     {
         Schema::create('question_types', function (Blueprint $table) {
             $table->integer('id', true, true);
-            $table->string('type',50);
+            $table->string('type', 50)->unique();
         });
     }
 

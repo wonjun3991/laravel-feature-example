@@ -16,5 +16,18 @@ GRANT ALL ON laravel.* TO 'laravel'@'%' IDENTIFIED BY 'laravel';
 FLUSH PRIVILEGES;
 ```
 
+## 실행
+
+```shell
+docker compose exec workspace php artisan migrate
+docker compose exec workspace php artisna db:seed
+docker compose exec -d workspace php artisan serve --host 0.0.0.0
+```
+
+## 테스트
+
+```shell
+docker compose exec workspace php artisan test
+```
 
 

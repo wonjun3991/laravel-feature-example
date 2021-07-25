@@ -8,20 +8,18 @@ use App\Http\Requests\StoreAnswerRequest;
 use App\Http\Requests\UpdateAnswerRequest;
 use App\Http\Resources\AnswerResource;
 use App\Services\AnswerService;
-use App\Services\QuestionService;
 use Illuminate\Http\Response;
 
 
 class AnswerController extends Controller
 {
     private AnswerService $answerService;
-    private QuestionService $questionService;
 
-    public function __construct(AnswerService $answerService, QuestionService $questionService)
+    public function __construct(AnswerService $answerService)
     {
         $this->answerService = $answerService;
-        $this->questionService = $questionService;
     }
+
 
     public function index(int $questionId)
     {
@@ -29,24 +27,25 @@ class AnswerController extends Controller
         return AnswerResource::collection($answerList);
     }
 
-    public function store(StoreAnswerRequest $request)
+    public function store(StoreAnswerRequest $request, int $questionId)
     {
         $answerDto = $request->toAnswerDto();
         try {
-            $this->answerService->createAnswer($answerDto);
+            $answerId = $this->answerService->createAnswer($questionId, $answerDto);
         } catch (QuestionHasAnswersMoreThanLimitException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-        return response()->json(['message' => '답변이 등록되었습니다.'], Response::HTTP_CREATED);
+        return response()->json(['message' => '답변이 등록되었습니다.','id'=>$answerId], Response::HTTP_CREATED);
     }
 
 
-    public function show(int $questionId, int $answerId)
+    public function show(int $answerId)
     {
-        return response()->json(['question_id' => $questionId, 'answer_id' => $answerId]);
+        $answer = $this->answerService->findAnswer($answerId);
+        return new AnswerResource($answer);
     }
 
-    public function update(UpdateAnswerRequest $request, int $questionId, int $answerId)
+    public function update(UpdateAnswerRequest $request, int $answerId)
     {
         $answerDto = $request->toAnswerDto();
         try {
@@ -57,7 +56,7 @@ class AnswerController extends Controller
         return response()->json(['message' => '답변이 수정되었습니다.']);
     }
 
-    public function destroy(int $questionId, int $answerId)
+    public function destroy(int $answerId)
     {
         try {
             $this->answerService->deleteAnswer($answerId);

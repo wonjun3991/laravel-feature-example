@@ -15,23 +15,24 @@ class AnswerService
 {
     public function getAnswerList(int $questionId)
     {
-        return Answer::whereQuestionId($questionId)
-            ->with(['User.catType', 'User.catPatternType', 'Question', 'Question.QuestionType'])
-            ->get();
+        return Question::with(['answers','answers.user'])
+            ->findOrFail($questionId)
+            ->answers;
     }
 
-    public function createAnswer(AnswerDto $answerDto)
+    public function createAnswer(int $questionId, AnswerDto $answerDto): int
     {
         Gate::authorize('create', Answer::class);
-        if (Question::findOrFail($answerDto->getQuestionId())->hasAnswerMoreThanLimit()) {
+        if (Question::findOrFail($questionId)->hasAnswerMoreThanLimit()) {
             throw new QuestionHasAnswersMoreThanLimitException();
         }
 
         $answer = new Answer();
-        $answer->question_id = $answerDto->getQuestionId();
+        $answer->question_id = $questionId;
         $answer->user_id = $answerDto->getUserId();
         $answer->content = $answerDto->getContent();
-        $answer->save();
+        $answer->saveOrFail();
+        return $answer->id;
     }
 
     public function updateAnswer(int $answerId, AnswerDto $answerDto)
@@ -52,7 +53,12 @@ class AnswerService
                 $answer->content = $answerDto->getContent();
             }
         }
-        $answer->save();
+        $answer->saveOrFail();
+    }
+
+    public function findAnswer(int $answerId)
+    {
+        return Answer::with(['user'])->findOrFail($answerId);
     }
 
     public function selectAnswer(int $answerId)

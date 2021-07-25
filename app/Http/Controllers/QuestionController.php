@@ -29,8 +29,8 @@ class QuestionController extends Controller
     public function store(StoreQuestionRequest $request)
     {
         $questionDto = $request->toQuestionDto();
-        $this->questionService->createQuestion($questionDto);
-        return response()->json(['message' => '질문이 등록되었습니다.'], Response::HTTP_CREATED);
+        $questionId = $this->questionService->createQuestion($questionDto);
+        return response()->json(['message' => '질문이 등록되었습니다.', 'id' => $questionId], Response::HTTP_CREATED);
     }
 
     public function show(int $id)

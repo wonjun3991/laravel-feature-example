@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\QuestionFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -36,10 +38,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $answers_count
  * @property-read \App\Models\QuestionType $questionType
  * @property-read \App\Models\User $user
+ * @method static QuestionFactory factory(...$parameters)
  */
 class Question extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     public const MAX_ANSWERS_LIMIT = 3;
 
@@ -76,6 +79,6 @@ class Question extends Model
 
     public function hasAnswerMoreThanLimit()
     {
-        return $this->answers()->count() > self::MAX_ANSWERS_LIMIT;
+        return $this->answers()->count() >= self::MAX_ANSWERS_LIMIT;
     }
 }

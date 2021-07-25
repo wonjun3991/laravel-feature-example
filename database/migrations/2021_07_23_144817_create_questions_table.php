@@ -17,7 +17,7 @@ class CreateQuestionsTable extends Migration
             $table->id();
             $table->integer('question_type_id', false, true);
             $table->unsignedBigInteger('user_id');
-            $table->string('title', 50);
+            $table->string('title', 100);
             $table->text('content');
             $table->timestamps();
             $table->softDeletes();

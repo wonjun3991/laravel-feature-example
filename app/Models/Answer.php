@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\AnswerFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -35,10 +37,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|Answer withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Answer withoutTrashed()
  * @mixin Builder
+ * @method static AnswerFactory factory(...$parameters)
  */
 class Answer extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'question_id',

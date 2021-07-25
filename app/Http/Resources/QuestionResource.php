@@ -16,16 +16,15 @@ class QuestionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'question_type' => $this->questionType,
+            'question_type' => $this->questionType->type,
             'title' => $this->title,
             'content' => $this->content,
             'created_at'=>$this->created_at,
             'answers' => AnswerResource::collection($this->answers),
             'user' => [
-                'id' => $this->user->id,
                 'type' => $this->user->type,
-                'cat_type' => $this->user->catType,
-                'cat_pattern_type' => $this->user->catPatternType,
+                'cat_type' => $this->user->catType->type,
+                'cat_pattern_type' => $this->user->catPatternType->type,
             ]
         ];
     }
