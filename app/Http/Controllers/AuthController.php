@@ -5,42 +5,43 @@ namespace App\Http\Controllers;
 use App\Exceptions\AlreadyExistsException;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Models\User;
-use App\Services\UserService;
+use App\Http\Resources\UserResource;
+use App\Services\AuthService;
 use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
-    private UserService $userService;
+    private AuthService $authService;
 
-    public function __construct(UserService $userService)
+    public function __construct(AuthService $authService)
     {
-        $this->userService = $userService;
+        $this->authService = $authService;
     }
 
     public function register(RegisterRequest $request)
     {
         $userDto = $request->toUserDto();
         try {
-            $this->userService->createUser($userDto);
+            $this->authService->register($userDto);
         } catch (AlreadyExistsException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-
         return response()->json(['message' => '회원가입이 완료되었습니다.'], Response::HTTP_CREATED);
     }
 
     public function login(LoginRequest $request)
     {
         $credentials = $request->validated();
-        if (!auth()->attempt($credentials)) {
+        $email = $credentials['email'];
+        $password = $credentials['password'];
+
+        if (!$this->authService->login($email, $password)) {
             return response()->json([
                 'message' => '인증정보가 올바르지 않습니다.'
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $user = User::whereEmail($credentials['email'])->first();
-        $token = $user->createToken('auth-token')->plainTextToken;
+        $token = $this->authService->getToken($email);
 
         return response()->json([
             'message' => '로그인이 완료되었습니다.',
@@ -50,7 +51,13 @@ class AuthController extends Controller
 
     public function logout()
     {
-        auth()->user()->tokens()->delete();
+        $this->authService->logout();
         return response()->json(['message' => '로그아웃이 완료되었습니다.']);
+    }
+
+    public function profile()
+    {
+        $user = $this->authService->getProfile();
+        return new UserResource($user);
     }
 }
