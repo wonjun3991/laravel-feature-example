@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use Illuminate\Http\Response;
+use Illuminate\Routing\RouteDependencyResolverTrait;
 
 class AuthController extends Controller
 {
@@ -31,6 +32,7 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
+        RouteDependencyResolverTrait::
         $credentials = $request->validated();
         $email = $credentials['email'];
         $password = $credentials['password'];
